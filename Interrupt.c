@@ -86,8 +86,6 @@ SSystemTimers sSystemTimers;
 
 static byte* pbyDataBuffer;
 
-near byte	byTimePeriod;
-
 
 #pragma switch speed
 
@@ -135,8 +133,8 @@ static ETxState	eTxState = eTxIdle;
 
 #pragma switch speed
 
-#define StartTimer0() (	RESET_TIMER0;//ENABLE_TIMER0_OVERFLOW_INT;)
-#define GetTimerUs() (byTimePeriod = TMR0)
+
+#define GetTimerUs() (TMR0)
 
 // PWM Control
 #define USE_PWM	1
@@ -330,7 +328,8 @@ void interrupt GlobalISR(void)
 				// Hit this state when the starting pulse is first detected. Start a timer to time how long it is
 				case	eIdle:	
 						{
-							StartTimer0();
+							RESET_TIMER0; 
+							ENABLE_TIMER0_OVERFLOW_INT;
 							SET_INTERRUPT_EDGE_RISING;		// The next interrupt is when the start pulse ends
 							eState = eTimingStartPulse;
 		

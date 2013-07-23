@@ -7,7 +7,7 @@
 #include "interrupt.h"
 #include "smalldivide.h"
 
-static enum
+static const enum
 {
 	eResetDisplay = 0x76,
 	eBlank = 0x78,
@@ -16,7 +16,7 @@ static enum
 	eDigit3 = 0x7d,
 	eDigit4 = 0x7e,
 	eSetBrightness = 0x7a,
-}EDisplayCommands;
+};
 
 
 

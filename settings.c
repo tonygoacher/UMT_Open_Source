@@ -244,24 +244,6 @@ bit CheckCloneData()
 	return psClonePacket->byChecksum == byChecksum;
 }
 
-// Wite a single byte to EEPROM specified in byAddress and byData
-static void  WriteByte()
-{
-	//eeprom_write(sSettingsData.byAddress,sSettingsData.byData);
-	EEADR = sSettingsData.byAddress;	// Set up data and address registers
-	EEDAT = sSettingsData.byData;
-	WREN=1;
-
-	while(GIE);							// EEPROM write sequnce is a bit odd
-	EECON2=0x55;
-	EECON2=0xAA;
-	WR=1;
-	while(!EEIF);
-	EEIF=0;
-	WREN=0;
-
-
-}
 
 
 void WriteCloneData()
@@ -270,9 +252,22 @@ void WriteCloneData()
 	for(sSettingsData.byAddress = eReserved0 ; sSettingsData.byAddress < eNumDataItems ; sSettingsData.byAddress++)
 	{
 		sSettingsData.byData = rgbyDataBuffer[sSettingsData.byAddress + offsetof(SClonePacket,byReserved0)];	
-		WriteByte();
+
+// Inline write to save on stack
+		EEADR = sSettingsData.byAddress;	// Set up data and address registers
+		EEDAT = sSettingsData.byData;
+		WREN=1;
+		while(GIE);							// EEPROM write sequnce is a bit odd
+		EECON2=0x55;
+		EECON2=0xAA;
+		WR=1;
+		while(!EEIF);
+		EEIF=0;
+		WREN=0;
+
 	}
 	GIE=1;	
+
 }
 
 

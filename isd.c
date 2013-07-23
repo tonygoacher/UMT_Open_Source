@@ -73,35 +73,33 @@ static const struct
 
 
 
-void Stop()
-{
-	SSLow();
-	SPIOut(eIsdStop);
-	SPIOut(0x00);
-	SSHigh();
-}
 
 
 void InitIsd()
 {
-	SSLow();
+	SS=0;
 	SPIOut(eIsdPowerUp);
 	SPIOut(0x00);
-	SSHigh();
-	SSLow();
+	SS=1;
+	SS=0;
 	SPIOut(eIsdWriteAPC2);
 	SPIOut(AUDCONTROLLOW | DEFAULTVOL);
 	SPIOut(AUDCONTROLHIGH);
-	SSHigh();
+	SS=1;
 }
 
 
 void PlaySound(ESound eSound)
 {
 	ClockHigh();	
-	Stop();
+// Stop
+	SS=0;
+	SPIOut(eIsdStop);
+	SPIOut(0x00);
+	SS=1;
+// _Stop
 	__delay_ms(30);
-	SSLow();
+	SS=0;
 	ClockHigh();
 	SPIOut(eIsdPlay);
 	SPIOut(0);		// Data byte 1 of play command is always 0
@@ -110,5 +108,5 @@ void PlaySound(ESound eSound)
 	SPIOut(rgcSoundAddress[eSound].byEndLowByte);
 	SPIOut(rgcSoundAddress[eSound].byEndHighByte);
 	SPIOut(0);		// Reserved address is set to 0
-	SSHigh();		
+	SS=1;		
 }

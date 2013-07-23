@@ -2,10 +2,9 @@
 
 #include "spi.h"
 
-#define MOSI	RC0
-#define SCLK	RC3
-#define	SS		RC4
-#define DISPLAY_SS	RC1
+
+
+
 
 byte bySPIBitCount;
 
@@ -24,8 +23,6 @@ void SPIOut(byte data)
 	{
 		MOSI = data & 0x01;
 		SCLK=0;
-//		SCLK=0;
-//		SCLK=1;
 		SCLK=1;
 		data >>=1;
 		
@@ -51,32 +48,7 @@ void SPIOutMSB(byte data)
 	}
 }
 
-void SSLow()
-{
-	SS=0;
-}
 
-void SSHigh()
-{
-	SS=1;
-}
 
-void ClockHigh()
-{
-	SCLK=1;
-}
 
-void ClockLow()
-{
-	SCLK=0;
-}
 
-void DisplaySSHigh()
-{
-	DISPLAY_SS = 1;
-}
-
-void DisplaySSLow()
-{
-	DISPLAY_SS = 0;
-}

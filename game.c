@@ -37,26 +37,6 @@ void SetHitLed()
 	 HITLED = GetHitLedTimer() !=0;
 }
 
-// Process the clone data packet
-EEvent ProcessCloneData()
-{
-	if(CheckCloneData())
-	{
-		PlaySound(eBeepSound);
-		WriteCloneData();
-		
-		// Wait for clone sound to finish
-		SetDelayTimer(6);
-		while(GetDelayTimer());
-		return eEventCloneDataReceived;
-	}
-	else
-	{
-		PlaySound(eNearMissSound);
-	}	
-	return eEventNullEvent;
-}
-
 
 
 // Process the system data command
@@ -65,7 +45,19 @@ EEvent ProcessSystemData()
 {
 	if(rgbyDataBuffer[ePacketDataByte] ==eDataByteCloningData)
 	{
-		return ProcessCloneData();
+		if(CheckCloneData())
+		{
+			WriteCloneData();
+			
+			// Wait for clone sound to finish
+			SetDelayTimer(6);
+			while(GetDelayTimer());
+			return eEventCloneDataReceived;
+		}
+		else
+		{
+			return eEventNearMiss;
+		}	
 	}
 	return eEventNearMiss;
 }
@@ -249,13 +241,16 @@ EGameState Dead()
 
 					if(eEvent == eEventCloneDataReceived)
 					{
+						PlaySound(eBeepSound);
 						return eGameStatePowerUp;
 					}
 
-					if(eEvent == eEventCloneDataReceived)
+					if(eEvent == eEventNearMiss)
 					{
-						return eGameStatePowerUp;
-					}
+						PlaySound(eNearMissSound);
+						return sGameState.eGameState;
+					}	
+
 
 					if(eEvent == eEventFullHealth)
 					{	
