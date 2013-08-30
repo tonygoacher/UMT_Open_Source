@@ -329,6 +329,7 @@ void interrupt GlobalISR(void)
 				case	eIdle:	
 						{
 							RESET_TIMER0; 
+							T0IF=0;
 							ENABLE_TIMER0_OVERFLOW_INT;
 							SET_INTERRUPT_EDGE_RISING;		// The next interrupt is when the start pulse ends
 							eState = eTimingStartPulse;
